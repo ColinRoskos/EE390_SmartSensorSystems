@@ -1,0 +1,11 @@
+--cpu=Cortex-M4.fp.sp --branchpatch=sdcomp-29491-629360
+".\main.o"
+".\systime.o"
+".\usart.o"
+".\sysclk.o"
+".\system.o"
+".\startup_stm32l475xx.o"
+".\system_stm32l4xx.o"
+--ro-base 0x08000000 --entry 0x08000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Lab1.map" -o .\Lab1.axf
