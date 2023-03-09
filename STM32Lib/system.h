@@ -34,7 +34,7 @@
 #define ASCII_CHAR 0x41 // ASCII letters start, index of ascii 'A'
 #define ASCII_A ASCII_CHAR // index of ascii 'A'
 #define FORMAT_DELIMITTER 0x25 // index of ascii '%'
-#define ASCII_PERCENT 0xF8 // index of ascii '°'
+#define ASCII_DEGREE 0xF8 // index of ascii '°'
 
 #define TEMP_CONV_HIGH 110.0
 #define TEMP_CONV_LOW 30.0

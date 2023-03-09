@@ -13,9 +13,38 @@
 
 #include "main.h"
 
+static char usartBuf[100];
+
 int main(void)
 {
+  double humidity, temp;
+  
 	sysClkInit();
 	initUSART1();
+	initI2C();
+	initHTS221( 0x1B, 0x84, 0x00, 0x00 );
 	
+	for(;;)
+	{
+		HTS221oneShotMeasure();
+    HTS221waitforHTMeasurement();
+    humidity = HTS221getHumidity();
+    temp = HTS221getTemp();
+    
+    sendTHtoUSART(temp, humidity);
+    
+    wait_ms_80MHz(1000);
+	}
+	
+	return 1;
+}
+
+void sendTHtoUSART(double temp, double hum)
+{
+  	putsUSART1(CLEAR_LINE);
+		putsUSART1(UP_LINE);
+    sprintf(usartBuf, MESSAGE_SPI_CONVERSION, hum, temp);
+    putsUSART1(usartBuf);
+    putcUSART1(ASCII_DEGREE);
+    putsUSART1(MESSAGE_DEG);
 }

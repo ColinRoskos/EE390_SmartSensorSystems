@@ -19,12 +19,12 @@
 #include "../STM32Lib/usart.h"
 #include "../STM32Lib/dma.h"
 #include "../STM32Lib/system.h"
-#include "../STM32Lib/spi.h"
+#include "../STM32Lib/i2c.h"
+#include "../STM32Lib/STDisco/HTS221.h"
 
-#define MESSAGE_SPI_CONVERSION "Humidity: %2.1f\%  Temperature = %2.1f °C\n\r"
+#define MESSAGE_SPI_CONVERSION "Humidity: %2.1f%%  Temperature = %2.1f "
+#define MESSAGE_DEG "C\n\r"
 
-
-void dacOutput(uint16_t);
-uint32_t inputValidation(char *);
+void sendTHtoUSART(double temp, double hum);
 
 #endif
