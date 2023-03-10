@@ -60,6 +60,8 @@ dkms.conf
 *.uvprojx.*
 *.uvoptx
 *.uvoptx.*
+*.scvd
+*/Objects/
 
 # word temp files
 ~*
