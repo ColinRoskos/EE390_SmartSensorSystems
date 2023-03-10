@@ -24,9 +24,13 @@ int main(void)
 	initI2C();
 	initHTS221( 0x1B, 0x84, 0x00, 0x00 );
 	
+  putsUSART1("AFTER INIT\n\r");
+  
 	for(;;)
 	{
+    putsUSART1("ONE_SHOT req\n\r");
 		HTS221oneShotMeasure();
+    putsUSART1("Wait req\n\r");
     HTS221waitforHTMeasurement();
     humidity = HTS221getHumidity();
     temp = HTS221getTemp();

@@ -48,7 +48,7 @@ void wait_us_80MHz(uint32_t time_us){
 ~ 		4 cycles total per loop - 80MHz/4/20 = 1MHz => 1us 
 */
 		for(uint32_t us = 0; us < 20; us++){
-			__asm("NOP");
+			NOP;
 		}
 	}
 }

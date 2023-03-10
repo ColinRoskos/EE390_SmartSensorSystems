@@ -58,6 +58,8 @@ dkms.conf
 *.uvguix.*
 *.uvprojx
 *.uvprojx.*
+*.uvoptx
+*.uvoptx.*
 
 # word temp files
 ~*

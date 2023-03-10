@@ -1,10 +1,9 @@
 #include "i2c.h"
 
-
-static volatile uint32_t blkSize, wrBytes, rdBytes;
-static volatile uint8_t inBuf[200], outBuf[100];
-static volatile uint16_t inx, outx;
-static volatile bool wrNotDone, inNACK;
+uint32_t blkSize, wrBytes, rdBytes = 0;
+uint8_t inBuf[200], outBuf[100] = {0};
+uint16_t inx, outx = 0;
+bool wrNotDone, inNACK = false;
 
 void I2C2_EV_IRQHandler(void)
 {
@@ -74,7 +73,40 @@ void I2C2_EV_IRQHandler(void)
 }
 
 
+void i2cSetBlockSize(uint32_t size)
+{
+  blkSize = size;
+}
+ 
+void i2cSetWriteBytes(uint32_t size)
+{
+  wrBytes = size;
+}
 
+uint32_t i2cGetWriteBytes(void)
+{
+  return wrBytes;
+}
+ 
+void i2cSetReadBytes(uint32_t size)
+{
+  rdBytes = size;
+}
+
+uint32_t i2cGetReadBytes(void)
+{
+  return rdBytes;
+}
+
+void resetOutx(void)
+{
+  outx = 0;
+}
+
+void resetInx(void)
+{
+  inx = 0;
+}
 
 
 void writePoll (uint8_t SLAddr)
@@ -92,6 +124,10 @@ void writePoll (uint8_t SLAddr)
 
 void initI2C(void)
 {
+  // enable clock for I2C
+	RCC->AHB2ENR |= RCC_AHB2SMENR_GPIOBSMEN;
+	RCC->APB1ENR1 = RCC_APB1ENR1_I2C2EN;
+  
 	// setup GPIOB pins 10, 11 for I2C
 	// configure PB10~PB11 for alternate function
 	GPIOB->MODER 	&= 	~(GPIO_MODER_MODE10 + GPIO_MODER_MODE11);

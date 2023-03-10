@@ -1,12 +1,6 @@
 
 #include "HTS221.h"
 
-//externally defined in I2C
-extern uint32_t blkSize, wrBytes, rdBytes;
-extern uint8_t inBuf[200], outBuf[100];
-extern uint16_t inx, outx;
-extern bool wrNotDone, inNACK;
-
 /*
  * initHTS221
  * must initialize i2c before use. Sets up HTS221 Humidity and Temperature 
@@ -109,10 +103,11 @@ void initHTS221(uint8_t avConf, uint8_t ctrl1, uint8_t ctrl2, uint8_t ctrl3)
 	outBuf[0] = HTS221_ADDR_AV_CONF; // address of AV_CONF register
 	outBuf[1] = avConf; // set sample rate
 	
-	I2C2->CR2 = I2C_CR2_AUTOEND + (2 << I2C_CR2_NBYTES_Pos) + (HTS221_ADDRESS << 1); 	
+	I2C2->CR2 = I2C_CR2_AUTOEND + (2 << I2C_CR2_NBYTES_Pos) + (HTS221_ADDRESS << 1); 
+  NOP;
 	I2C2->CR2 |= I2C_CR2_START; // generate a START condition
 	
-	while(wrBytes);
+	while(wrBytes){NOP;}
 	
 	outBuf[0] = HTS221_ADDR_CTRL_REG1; // address of CTRL_REG1 (0x20) + bit 7 set to 1
 	outBuf[1] = ctrl1;
@@ -125,7 +120,7 @@ void initHTS221(uint8_t avConf, uint8_t ctrl1, uint8_t ctrl2, uint8_t ctrl3)
 	I2C2->CR2	= I2C_CR2_AUTOEND + (4 << I2C_CR2_NBYTES_Pos) + (HTS221_ADDRESS << 1);
 	I2C2->CR2 |= I2C_CR2_START; // generate a START condition
 	
-	while(wrBytes);
+	while(wrBytes){NOP;}
 }
 
 void readHTS221Regs (uint16_t cnt, uint8_t addr)
@@ -142,7 +137,7 @@ void readHTS221Regs (uint16_t cnt, uint8_t addr)
 		outBuf[0] 	= addr; 
 	I2C2->CR2 	= I2C_CR2_AUTOEND + (1 << I2C_CR2_NBYTES_Pos) + 0xBE;  //101 1111
 	I2C2->CR2 	|= I2C_CR2_START;
-	while(rdBytes);
+	while(rdBytes){NOP;}
 }
 
 void HTS221oneShotMeasure(void)
@@ -155,7 +150,8 @@ void HTS221oneShotMeasure(void)
 	outBuf[1] = 0x01; // command to start one-shot measurement
 	I2C2->CR2 = I2C_CR2_AUTOEND + (2 << I2C_CR2_NBYTES_Pos) + 0xBE; 
 	I2C2->CR2 |= I2C_CR2_START;
-	while(wrBytes);
+	
+	while(wrBytes){NOP;}
 }
 
 void HTS221waitforHTMeasurement (void)
