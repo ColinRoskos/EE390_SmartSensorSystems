@@ -1,0 +1,152 @@
+/*
+ * Driver for the LIS3MDL Magnetometer
+ *
+ * @Author Colin Roskos
+ */
+
+
+
+#ifndef _LIS3MDL_H
+#define _LIS3MDL_H
+
+#include "stm32l475xx.h"
+#include "../i2c.h"
+
+/* I2C Slave Addresses */
+#define LIS3MDL_I2C_ADDRESS_W			0x38
+#define LIS3MDL_I2C_ADDRESS_R			0x39
+#define LIS3MDL_I2C_SD_SA_H				0x04 /* if SD0/SA1 pin is high */
+
+/* Register Addresses */
+#define LIS3MDL_ADDRESS_WHO_AM_I 		0x0F
+
+#define LIS3MDL_ADDRESS_CTRL_REG1 	0x20
+#define LIS3MDL_ADDRESS_CTRL_REG2 	0x21
+#define LIS3MDL_ADDRESS_CTRL_REG3 	0x22
+#define LIS3MDL_ADDRESS_CTRL_REG4 	0x23
+#define LIS3MDL_ADDRESS_CTRL_REG5 	0x24
+
+#define LIS3MDL_ADDRESS_STATUS_REG	0x27
+
+#define LIS3MDL_ADDRESS_OUT_X_L			0x28
+#define LIS3MDL_ADDRESS_OUT_X_H			0x29
+#define LIS3MDL_ADDRESS_OUT_Y_L			0x2A
+#define LIS3MDL_ADDRESS_OUT_Y_H			0x2B
+#define LIS3MDL_ADDRESS_OUT_Z_L			0x2C
+#define LIS3MDL_ADDRESS_OUT_Z_H			0x2D
+
+#define LIS3MDL_ADDRESS_TEMP_OUT_L	0x2E
+#define LIS3MDL_ADDRESS_TEMP_OUT_H	0x2F
+
+#define LIS3MDL_ADDRESS_INT_CFG			0x30
+#define LIS3MDL_ADDRESS_INT_SRC			0x31
+
+#define LIS3MDL_ADDRESS_INT_THS_L		0x32
+#define LIS3MDL_ADDRESS_INT_THS_H		0x33
+
+/* Register Definitions */
+#define LIS3MDL_WHO_AM_I 			0x3D
+
+#define LIS3MDL_CTRL_REG1_Msk						0x00
+#define LIS3MDL_CTRL_REG1_TEMP_EN_Msk 	0x80
+#define LIS3MDL_CTRL_REG1_OM_Msk 				0x60
+#define LIS3MDL_CTRL_REG1_DO_Msk 				0x1C
+#define LIS3MDL_CTRL_REG1_FAST_ODR_Msk 	0x02
+#define LIS3MDL_CTRL_REG1_ST_Msk 				0x01
+
+#define LIS3MDL_CTRL_REG1_TEMP_EN				0x80
+#define LIS3MDL_CTRL_REG1_OM_0 					0x20
+#define LIS3MDL_CTRL_REG1_OM_1 					0x40
+#define LIS3MDL_CTRL_REG1_DO_0 					0x04
+#define LIS3MDL_CTRL_REG1_DO_1 					0x08
+#define LIS3MDL_CTRL_REG1_DO_2 					0x10
+#define LIS3MDL_CTRL_REG1_DEFAULT				0x40
+
+#define LIS3MDL_CTRL_REG2_Msk						0x00
+#define LIS3MDL_CTRL_REG2_FS_Msk 				0x60
+#define LIS3MDL_CTRL_REG2_REBOOT_Msk		0x08
+#define LIS3MDL_CTRL_REG2_SOFT_RST_Msk	0x04
+
+#define LIS3MDL_CTRL_REG2_FS_0 					0x20
+#define LIS3MDL_CTRL_REG2_FS_1 					0x40
+#define LIS3MDL_CTRL_REG2_REBOOT				0x08
+#define LIS3MDL_CTRL_REG2_SOFT_RST			0x04
+#define LIS3MDL_CTRL_REG2_DEFAULT				0x00
+
+#define LIS3MDL_CTRL_REG3_Msk						0x00
+#define LIS3MDL_CTRL_REG3_LP_Msk 				0x20
+#define LIS3MDL_CTRL_REG3_SIM_Msk 			0x04
+#define LIS3MDL_CTRL_REG3_MD_Msk 				0x03
+
+#define LIS3MDL_CTRL_REG3_LP		 				0x20
+#define LIS3MDL_CTRL_REG3_SIM 					0x04
+#define LIS3MDL_CTRL_REG3_MD_0	 				0x01
+#define LIS3MDL_CTRL_REG3_MD_1	 				0x02
+#define LIS3MDL_CTRL_REG3_DEFAULT				0x03
+
+#define LIS3MDL_CTRL_REG4_Msk						0x00
+#define LIS3MDL_CTRL_REG4_OM_Msk 				0x0C
+#define LIS3MDL_CTRL_REG4_BLE_Msk 			0x02
+
+#define LIS3MDL_CTRL_REG4_OM_0 					0x04
+#define LIS3MDL_CTRL_REG4_OM_1 					0x08
+#define LIS3MDL_CTRL_REG4_BLE     			0x02
+#define LIS3MDL_CTRL_REG4_DEFAULT				0x00
+
+#define LIS3MDL_CTRL_REG5_Msk						0x00
+#define LIS3MDL_CTRL_REG5_FAST_READ_Msk	0x80
+#define LIS3MDL_CTRL_REG5_BDU_Msk				0x40
+
+#define LIS3MDL_CTRL_REG5_FAST_READ   	0x80
+#define LIS3MDL_CTRL_REG5_BDU    				0x40
+#define LIS3MDL_CTRL_REG5_DEFAULT				0x00
+
+/* LIS3MDL_STATUS_REG is an output REG */
+#define LIS3MDL_STATUS_REG_ZYXOR		   	0x80
+#define LIS3MDL_STATUS_REG_ZOR		   		0x40
+#define LIS3MDL_STATUS_REG_YOR		   		0x20
+#define LIS3MDL_STATUS_REG_XOR		   		0x10
+#define LIS3MDL_STATUS_REG_ZYXDA		   	0x80
+#define LIS3MDL_STATUS_REG_ZDA		   		0x40
+#define LIS3MDL_STATUS_REG_YDA		   		0x20
+#define LIS3MDL_STATUS_REG_XDA		   		0x10
+
+#define LIS3MDL_INT_CFG_REG_Msk   			0x08
+#define LIS3MDL_INT_CFG_REG_XIEN_Msk   	0x80
+#define LIS3MDL_INT_CFG_REG_YIEN_Msk   	0x40
+#define LIS3MDL_INT_CFG_REG_ZIEN_Msk   	0x20
+#define LIS3MDL_INT_CFG_REG_IEA_Msk   	0x04
+#define LIS3MDL_INT_CFG_REG_LIR_Msk   	0x02
+#define LIS3MDL_INT_CFG_REG_IEN_Msk   	0x01
+
+#define LIS3MDL_INT_CFG_REG       			0x08
+#define LIS3MDL_INT_CFG_REG_XIEN       	0x80
+#define LIS3MDL_INT_CFG_REG_YIEN       	0x40
+#define LIS3MDL_INT_CFG_REG_ZIEN       	0x20
+#define LIS3MDL_INT_CFG_REG_IEA       	0x04
+#define LIS3MDL_INT_CFG_REG_LIR       	0x02
+#define LIS3MDL_INT_CFG_REG_IEN       	0x01
+#define LIS3MDL_INT_CFG_REG_DEFAULT			0xE8
+
+/* LIS3MDL_INT_SRC_REG is read only */
+#define LIS3MDL_INT_SRC_REG			   			0x00
+#define LIS3MDL_INT_SRC_REG_PTH_X  			0x80
+#define LIS3MDL_INT_SRC_REG_PTH_Y  			0x40
+#define LIS3MDL_INT_SRC_REG_PTH_Z  			0x20
+#define LIS3MDL_INT_SRC_REG_NTH_X  			0x10
+#define LIS3MDL_INT_SRC_REG_NTH_Y  			0x08
+#define LIS3MDL_INT_SRC_REG_NTH_Z  			0x04
+#define LIS3MDL_INT_SRC_REG_MROI  			0x02
+#define LIS3MDL_INT_SRC_REG_INT    			0x01
+
+#define LIS3MDL_INT_THS_L_M_Msk    			0xFF /* bits 7-0 */
+#define LIS3MDL_INT_THS_H_M_Msk    			0x7F /* bits 14-8 */
+
+
+
+
+void initLIS3MDL(uint16_t address, uint16_t data_rate, uint32_t interruptPin);
+
+
+
+#endif
