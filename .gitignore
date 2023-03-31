@@ -62,6 +62,8 @@ dkms.conf
 *.uvoptx.*
 *.scvd
 */Objects/
+*/RTE/
+*/DebugConfig/
 
 # word temp files
 ~*
